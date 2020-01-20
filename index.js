@@ -13,8 +13,6 @@ import {
     hideKeyboard
 } from './customKeyboard'
 
-import NumberKeyBoardView from './views/NumberKeyBoard'
-import SafeKeyBoardView from './views/SafeKeyBoard'
 import AwareCusKeyBoardScrollView from './AwareCusKeyBoardScrollView'
 
 export {
@@ -27,8 +25,6 @@ export {
     CustomTextInput,
     AwareCusKeyBoardScrollView,
 
-    NumberKeyBoardView,
-    SafeKeyBoardView,
     keyBoardAPI,
     hideKeyboard
 }

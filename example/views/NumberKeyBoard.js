@@ -10,7 +10,7 @@ import styles, {
     keyStyle, BG_COLOR
 } from './styles';
 
-import InteractionManager from '../HFInteractionManager'
+import InteractionManager from 'react-native-natuan-custom-keyboard/HFInteractionManager'
 
 const numberKeys = [
     [
@@ -38,7 +38,7 @@ class Keyboard extends PureComponent {
     }
 
     _clearAll() {
-        InteractionManager.runAfterInteractions(()=>{ 
+        InteractionManager.runAfterInteractions(()=>{
             this.props.onClearAll();
         })
     }

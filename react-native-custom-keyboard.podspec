@@ -3,11 +3,11 @@ require "json"
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
 Pod::Spec.new do |s|
-  s.name         = "react-native-natuan-custom-keyboard"
+  s.name         = "react-native-custom-keyboard"
   s.version      = package["version"]
   s.summary      = package["description"]
   s.description  = <<-DESC
-                  react-native-natuan-custom-keyboard
+                  react-native-custom-keyboard
                    DESC
   s.homepage     = "https://github.com/natuanorg/react-native-natuan-custom-keyboard"
   s.license      = "MIT"
