@@ -1,16 +1,16 @@
-# react-native-custom-keyboard
+## react-native-natuan-custom-keyboard
+Inspired by [lyxia/react-native-yusha-customKeyboard](https://github.com/lyxia/react-native-yusha-customKeyboard)
 
-## Getting started
+### Installation
 
-`$ npm install react-native-custom-keyboard --save`
+```
+yarn add react-native-natuan-custom-keyboard
+react-native link react-native-natuan-custom-keyboard
+```
 
-### Mostly automatic installation
-
-`$ react-native link react-native-custom-keyboard`
-
-## Usage
+### Usage
 ```javascript
-import CustomKeyboard from 'react-native-custom-keyboard';
+import CustomKeyboard from 'react-native-natuan-custom-keyboard';
 
 // TODO: What to do with the module?
 CustomKeyboard;

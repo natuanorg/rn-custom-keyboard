@@ -1,7 +1,7 @@
 {
   "name": "react-native-natuan-custom-keyboard",
   "title": "React Native Custom Keyboard",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "TODO",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "baseUrl": "https://github.com/natuanorg/react-native-natuan-custom-keyboard"
   },
   "keywords": [
-    "react-native"
+    "react-native","react-native-keyboard", "react-native-custom-keyboard"
   ],
   "author": {
     "name": "Nguyen Anh Tuan",
