@@ -7,7 +7,7 @@ import {
     AppState,
     findNodeHandle,
     Keyboard,
-    NativeAppEventEmitter,
+    DeviceEventEmitter,
     NativeModules,
     Platform,
     TextInput
@@ -40,7 +40,8 @@ export const currentHeight = Platform.OS === 'ios' ? (isIphoneX() ? 286 : 252) :
 
 export function addKeyBoardShowListener(listener) {
     if(Platform.OS === 'android') {
-        return NativeAppEventEmitter.addListener('showCustomKeyboard', (data) => {
+        return DeviceEventEmitter.addListener('showCustomKeyboard', (data) => {
+            console.log('Android.addKeyBoardShowListener.showCustomKeyboard', data)
             listener(data)
         })
     } else {
@@ -53,7 +54,8 @@ export function addKeyBoardShowListener(listener) {
 
 export function addKeyBoardHideListener(listener) {
     if(Platform.OS === 'android') {
-        return NativeAppEventEmitter.addListener('hideCustomKeyboard', (data) => {
+        return DeviceEventEmitter.addListener('hideCustomKeyboard', (data) => {
+            console.log('Android.addKeyBoardHideListener.hideCustomKeyboard', data)
             listener(data)
         })
     } else {
@@ -67,7 +69,7 @@ export function addKeyBoardHideListener(listener) {
 export function removeKeyBoardListener(subscribtion) {
     console.log(`removeKeyBoardListener`)
     if(Platform.OS === 'android') {
-        NativeAppEventEmitter.removeSubscription(subscribtion)
+        DeviceEventEmitter.removeSubscription(subscribtion)
     } else {
         Keyboard.removeListener(subscribtion)
     }
@@ -115,6 +117,7 @@ export class CustomTextInput extends Component {
     }
 
     componentDidMount() {
+        console.log('CustomTextInput.componentDidMount')
         this.installTime = setTimeout(() => {
             install(findNodeHandle(this.input), this.props.customKeyboardType)
             AppState.addEventListener('change', this._handleAppStateChange)
@@ -122,11 +125,12 @@ export class CustomTextInput extends Component {
     }
 
     componentWillUnmount() {
+        console.log('CustomTextInput.componentWillUnmount')
         this.installTime && clearTimeout(this.installTime)
         AppState.removeEventListener('change', this._handleAppStateChange)
     }
 
-    _handleAppStateChange = (nextAppState: string) => {
+    _handleAppStateChange = (nextAppState) => {
         if (nextAppState === 'background') {
             //检查键盘
             if (TextInput.State.currentlyFocusedField() === findNodeHandle(this.input)) {
@@ -156,6 +160,7 @@ export class CustomTextInput extends Component {
     }
 
     render() {
+        console.log('CustomTextInput.render')
         const {customKeyboardType, ...others} = this.props
         if (!customKeyboardType) {
             return (
@@ -176,6 +181,7 @@ export function keyBoardAPI(keyBoardName) {
     return function (KeyBoardView) {
         class KeyBoard extends Component {
             render() {
+                console.log('KeyBoard.render')
                 return (
                     <CustomKeyBoardView
                         insertText={insertText}

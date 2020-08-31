@@ -1,4 +1,5 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
+import {InteractionManager} from 'react-native'
 
 import PropTypes from 'prop-types'
 
@@ -10,7 +11,7 @@ import styles, {
     keyStyle, BG_COLOR
 } from './styles';
 
-import InteractionManager from 'react-native-natuan-custom-keyboard/HFInteractionManager'
+//import InteractionManager from 'react-native-natuan-custom-keyboard/HFInteractionManager'
 
 const numberKeys = [
     [

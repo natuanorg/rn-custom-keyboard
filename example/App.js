@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React from 'react';
+import React, {Component} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,27 +14,13 @@ import {
   View,
   Text,
   StatusBar,
+    TouchableOpacity
 } from 'react-native';
 import * as CustomKeyboard from 'react-native-natuan-custom-keyboard'
+import AppContainer from "./AppContainer";
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <View>
-          <CustomKeyboard.CustomTextInput
-              customKeyboardType="numberKeyBoardWithDot"
-              placeholder="numberKeyBoardWithDot"
-          />
-        </View>
-      </SafeAreaView>
-    </>
-  );
+export default class App extends Component{
+  render() {
+    return (<AppContainer/>)
+  }
 };
-
-const styles = StyleSheet.create({
-
-});
-
-export default App;

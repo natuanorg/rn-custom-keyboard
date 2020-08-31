@@ -84,6 +84,7 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
                                     data.putInt("tag", tag);
                                     Log.i("react-native", "------1data: " + data);
                                     sendEvent("showCustomKeyboard", data);
+
                                     new Handler().postDelayed(new Runnable(){
                                         public void run() {
                                             //execute the task
@@ -122,18 +123,18 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
     private View createCustomKeyboard(Activity activity, int tag, String type) {
         RelativeLayout layout = new RelativeLayout(activity);
         rootView = new CustomKeyBoardView(this.getReactApplicationContext());
-        //rootView.setBackgroundColor(Color.TRANSPARENT);
+        rootView.setBackgroundColor(Color.TRANSPARENT);
 
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("tag", tag);
-//        bundle.putString("type", type);
-//        rootView.startReactApplication(
-//                ((ReactApplication) activity.getApplication()).getReactNativeHost().getReactInstanceManager(),
-//                "CustomKeyboard",
-//                bundle);
+       Bundle bundle = new Bundle();
+       bundle.putInt("tag", tag);
+       bundle.putString("type", type);
+       rootView.startReactApplication(
+               ((ReactApplication) activity.getApplication()).getReactNativeHost().getReactInstanceManager(),
+               "CustomKeyboard",
+               bundle);
 
         final float scale = activity.getResources().getDisplayMetrics().density;
-        RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Math.round((252+54)*scale));
         lParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         layout.addView(rootView, lParams);
         return layout;
@@ -296,7 +297,6 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
                     ((ViewGroup) keyboard.getParent()).removeView(keyboard);
                 }
                 UiThreadUtil.runOnUiThread(new Runnable() {
-
                     @Override
                     public void run() {
                         ((InputMethodManager) getReactApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE)).showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
@@ -306,8 +306,7 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         });
     }
 
-    protected void sendEvent(String eventName,
-                             @Nullable WritableMap params) {
+    protected void sendEvent(String eventName, @Nullable WritableMap params) {
         Log.i("react-native", "send Event name:" + eventName + " params tag: " + params);
         this.getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
