@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "postinstall": "rm -rf node_modules/react-native-natuan-custom-keyboard/{.git,node_modules,Example}",
-    "android": "rm -rf node_modules && yarn && cd android/ && ./gradlew clean && cd .. && react-native run-android",
+    "android": "react-native run-android --appId com.example.customkeyboard --main-activity MainActivity",
     "ios": "react-native run-ios --simulator='iPhone Xʀ'",
     "start": "react-native start",
     "test": "jest",

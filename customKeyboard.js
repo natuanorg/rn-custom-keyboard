@@ -81,8 +81,11 @@ export function register(type, factory) {
 }
 
 export function clearFocus(tag) {
-    console.log(`clearFocus: ${tag}`)
-    TextInput.State.blurTextInput(tag)
+    // console.log(`clearFocus: ${tag}`)
+    // TextInput.State.blurTextInput(tag)
+    const currentlyFocusedInput = TextInput.State.currentlyFocusedInput()
+    console.log('currentlyFocusedInput', currentlyFocusedInput)
+    currentlyFocusedInput && TextInput.State.blurTextInput(currentlyFocusedInput)
 }
 
 export function onSubmit(tag) {
@@ -133,14 +136,19 @@ export class CustomTextInput extends Component {
     _handleAppStateChange = (nextAppState) => {
         if (nextAppState === 'background') {
             //检查键盘
-            if (TextInput.State.currentlyFocusedField() === findNodeHandle(this.input)) {
+            /*if (TextInput.State.currentlyFocusedField() === findNodeHandle(this.input)) {
                 TextInput.State.blurTextInput(TextInput.State.currentlyFocusedField())
+                return true
+            }*/
+            const currentlyFocusedInput = TextInput.State.currentlyFocusedInput()
+            if (currentlyFocusedInput) {
+                TextInput.State.blurTextInput(currentlyFocusedInput)
                 return true
             }
         }
     }
 
-    componentWillReceiveProps(newProps) {
+    UNSAFE_componentWillReceiveProps(newProps) {
         if (newProps.customKeyboardType !== this.props.customKeyboardType) {
             install(findNodeHandle(this.input), newProps.customKeyboardType)
         }

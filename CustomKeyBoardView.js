@@ -52,7 +52,7 @@ export default class KeyBoard extends Component{
         })
     }
 
-    componentWillReceiveProps(newProps) {
+    UNSAFE_componentWillReceiveProps(newProps) {
         console.log(`CustomKeyboardView.componentWillReceiveProps`)
     }
 
