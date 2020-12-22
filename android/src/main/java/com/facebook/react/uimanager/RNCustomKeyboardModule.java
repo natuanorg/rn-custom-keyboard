@@ -10,6 +10,8 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -37,7 +39,8 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
     private final int TAG_ID = 0xdeadbeaf;
     private final ReactApplicationContext reactContext;
     private ReactEditText curEditText;
-    private boolean showKeyboard = false;
+    SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+    SparseArray<ReactRootView> sparseRootViewArray = new SparseArray<>();
 
     public RNCustomKeyboardModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -65,7 +68,7 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
                 final Activity activity = getCurrentActivity();
                 final ReactEditText edit = getEditById(tag);
                 if (edit == null) {
-                    Log.i("react-native", "no eidt text");
+                    Log.i("react-native", "no edit text");
                     return;
                 }
 
@@ -82,7 +85,7 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
                                 public void run() {
                                     ((InputMethodManager) getReactApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
                                     curEditText = (ReactEditText) v;
-                                    showKeyboard = true;
+                                    sparseBooleanArray.put(tag, true);
                                     WritableMap data = Arguments.createMap();
                                     data.putInt("tag", tag);
                                     Log.i("react-native", "------1data: " + data);
@@ -91,19 +94,18 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
                                     handle.postDelayed(new Runnable() {
                                         public void run() {
                                             //execute the task
-                                            if (showKeyboard) {
+                                            if (sparseBooleanArray.get(tag)) {
                                                 Log.d(TAG, "OnFocusChangeListener.hasFocus.showKeyboard");
                                                 View keyboard = (View) curEditText.getTag(TAG_ID);
                                                 final Activity activity = getCurrentActivity();
-                                                if (keyboard.getParent() == null) {
+                                                ReactRootView reactRootView = sparseRootViewArray.get(tag);
+                                                if (reactRootView != null && keyboard.getParent() == null && activity != null) {
                                                     Log.d(TAG, "OnFocusChangeListener.hasFocus.showKeyboard.activity.addContentView");
-                                                    if (rootView != null) {
-                                                        Bundle bundle = new Bundle();
-                                                        bundle.putInt("tag", tag);
-                                                        bundle.putString("type", type);
-                                                        ReactInstanceManager mReactInstanceManager = ((ReactApplication) activity.getApplicationContext()).getReactNativeHost().getReactInstanceManager();
-                                                        rootView.startReactApplication(mReactInstanceManager, "CustomKeyboard", bundle);
-                                                    }
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putInt("tag", tag);
+                                                    bundle.putString("type", type);
+                                                    ReactInstanceManager mReactInstanceManager = ((ReactApplication) activity.getApplicationContext()).getReactNativeHost().getReactInstanceManager();
+                                                    reactRootView.startReactApplication(mReactInstanceManager, "CustomKeyboard", bundle);
                                                     activity.addContentView(keyboard, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                                                 }
                                             }
@@ -114,12 +116,11 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
                         } else {
                             if (v == curEditText) {
                                 View keyboard = (View) edit.getTag(TAG_ID);
-                                if (keyboard.getParent() != null) {
-                                    if (rootView != null) {
-                                        rootView.unmountReactApplication();
-                                    }
+                                ReactRootView reactRootView = sparseRootViewArray.get(tag);
+                                if (reactRootView != null && keyboard != null && keyboard.getParent() != null) {
+                                    reactRootView.unmountReactApplication();
                                     Log.d(TAG, "OnFocusChangeListener.hasFocus.hideKeyboard");
-                                    showKeyboard = false;
+                                    sparseBooleanArray.delete(tag);
                                     ((ViewGroup) keyboard.getParent()).removeView(keyboard);
                                     WritableMap data = Arguments.createMap();
                                     data.putInt("tag", tag);
@@ -134,17 +135,15 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         });
     }
 
-    ReactRootView rootView = null;
-
     private View createCustomKeyboard(Activity activity, int tag, String type) {
         Log.d(TAG, "createCustomKeyboard");
         RelativeLayout layout = new RelativeLayout(activity);
-        rootView = new CustomKeyBoardView(this.getReactApplicationContext());
-
+        ReactRootView rootView = new CustomKeyBoardView(this.getReactApplicationContext());
         final float scale = activity.getResources().getDisplayMetrics().density;
         RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Math.round((252 + 54) * scale));
         lParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         layout.addView(rootView, lParams);
+        sparseRootViewArray.put(tag, rootView);
         return layout;
     }
 
@@ -153,7 +152,6 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final Activity activity = getCurrentActivity();
                 final ReactEditText edit = getEditById(tag);
                 if (edit == null) {
                     return;
@@ -169,7 +167,6 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final Activity activity = getCurrentActivity();
                 final ReactEditText edit = getEditById(tag);
                 if (edit == null) {
                     return;
@@ -188,7 +185,6 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final Activity activity = getCurrentActivity();
                 final ReactEditText edit = getEditById(tag);
                 if (edit == null) {
                     return;
@@ -210,7 +206,6 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final Activity activity = getCurrentActivity();
                 final ReactEditText edit = getEditById(tag);
                 if (edit == null) {
                     return;
@@ -232,7 +227,6 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final Activity activity = getCurrentActivity();
                 final ReactEditText edit = getEditById(tag);
                 if (edit == null) {
                     return;
@@ -254,7 +248,6 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final Activity activity = getCurrentActivity();
                 final ReactEditText edit = getEditById(tag);
                 if (edit == null) {
                     return;

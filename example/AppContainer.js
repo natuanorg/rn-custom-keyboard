@@ -67,8 +67,6 @@ class HomeScreen extends React.Component {
             this.input.focus()
         }
     }
-
-
 }
 
 class SettingsScreen extends React.Component {
@@ -82,9 +80,40 @@ class SettingsScreen extends React.Component {
     }
 }
 
+class ProfileScreen extends React.Component {
+    render() {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Profile</Text>
+                <CustomKeyboard.CustomTextInput
+                    textInputRef={this.textInputRef}
+                    customKeyboardType="numberKeyBoardWithDot"
+                    placeholder="numberKeyBoardWithDot"
+                />
+                <TouchableOpacity style={{alignSelf: 'center'}} onPress={this.toggle}>
+                    <Text>Toggle</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    textInputRef = (ref) => {
+        this.input = ref
+    }
+
+    toggle = () => {
+        if (this.input.isFocused()) {
+            this.input.blur()
+        } else {
+            this.input.focus()
+        }
+    }
+}
+
 const TabNavigator = createBottomTabNavigator({
     Settings: SettingsScreen,
     Home: HomeScreen,
+    Profile: ProfileScreen
 });
 
 export default createAppContainer(TabNavigator);
