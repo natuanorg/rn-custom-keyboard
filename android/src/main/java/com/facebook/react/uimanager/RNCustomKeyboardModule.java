@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -16,7 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.view.Gravity;
+import android.widget.LinearLayout;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -115,18 +116,22 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
                             });
                         } else {
                             if (v == curEditText) {
-                                View keyboard = (View) edit.getTag(TAG_ID);
-                                ReactRootView reactRootView = sparseRootViewArray.get(tag);
-                                if (reactRootView != null && keyboard != null && keyboard.getParent() != null) {
-                                    reactRootView.unmountReactApplication();
-                                    Log.d(TAG, "OnFocusChangeListener.hasFocus.hideKeyboard");
-                                    sparseBooleanArray.delete(tag);
-                                    ((ViewGroup) keyboard.getParent()).removeView(keyboard);
-                                    WritableMap data = Arguments.createMap();
-                                    data.putInt("tag", tag);
-                                    Log.i("react-native", "------data: " + data);
-                                    sendEvent("hideCustomKeyboard", data);
-                                }
+                                handle.postDelayed(new Runnable() {
+                                    public void run() {
+                                        View keyboard = (View) edit.getTag(TAG_ID);
+                                        ReactRootView reactRootView = sparseRootViewArray.get(tag);
+                                        if (reactRootView != null && keyboard != null && keyboard.getParent() != null) {
+                                            reactRootView.unmountReactApplication();
+                                            Log.d(TAG, "OnFocusChangeListener.hasFocus.hideKeyboard");
+                                            sparseBooleanArray.delete(tag);
+                                            ((ViewGroup) keyboard.getParent()).removeView(keyboard);
+                                            WritableMap data = Arguments.createMap();
+                                            data.putInt("tag", tag);
+                                            Log.i("react-native", "------data: " + data);
+                                            sendEvent("hideCustomKeyboard", data);
+                                        }
+                                    }
+                                }, 100);
                             }
                         }
                     }
@@ -137,11 +142,11 @@ public class RNCustomKeyboardModule extends ReactContextBaseJavaModule {
 
     private View createCustomKeyboard(Activity activity, int tag, String type) {
         Log.d(TAG, "createCustomKeyboard");
-        RelativeLayout layout = new RelativeLayout(activity);
+        LinearLayout layout = new LinearLayout(activity);
         ReactRootView rootView = new CustomKeyBoardView(this.getReactApplicationContext());
         final float scale = activity.getResources().getDisplayMetrics().density;
-        RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Math.round((252 + 54) * scale));
-        lParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Math.round((252 + 54) * scale));
+        lParams.gravity = Gravity.BOTTOM;
         layout.addView(rootView, lParams);
         sparseRootViewArray.put(tag, rootView);
         return layout;
